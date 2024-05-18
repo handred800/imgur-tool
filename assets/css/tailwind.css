@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+input, textarea, select {
+    @apply border border-slate-300 p-1 px-2 rounded-lg;
+}
+@layer components {
+    .btn {
+        @apply inline-block px-3 py-2 rounded bg-slate-300 hover:bg-slate-400 transition-all duration-100;
+        &:has(svg) {
+            @apply inline-flex;
+        }
+    }
+    .badge {@apply inline-block rounded-lg px-2 bg-slate-300;}
+    .card {@apply block shadow-lg;}
+    .card figure {@apply relative bg-slate-500;}
+    .card-body {@apply py-2 px-4}
+}
