@@ -7,13 +7,17 @@ input, textarea, select {
 }
 @layer components {
     .btn {
-        @apply inline-block px-3 py-2 rounded bg-slate-300 hover:bg-slate-400 transition-all duration-100;
+        @apply inline-block px-3 py-2 cursor-pointer rounded bg-slate-300 hover:bg-slate-400 transition-colors;
         &:has(svg) {
             @apply inline-flex;
         }
+        svg {@apply inline-block mr-2;}
+        svg:only-child {@apply m-0}
+    }
+    .dropdown-link {
+        @apply flex;
+        svg {@apply inline-block mr-2;}
+        svg:only-child {@apply m-0}        
     }
     .badge {@apply inline-block rounded-lg px-2 bg-slate-300;}
-    .card {@apply block shadow-lg;}
-    .card figure {@apply relative bg-slate-500;}
-    .card-body {@apply py-2 px-4}
 }

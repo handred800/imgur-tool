@@ -1,8 +1,8 @@
 export const useImgurAlbum = defineStore('album', () => {
     const albums = ref([]);
     const currentAlbumId = ref(null)
-    const currentAlbumImages = ref([]);
+    const currentAlbum = ref({});
 
 
-    return { albums, currentAlbumImages, currentAlbumId }
+    return { albums, currentAlbum, currentAlbumId }
 })

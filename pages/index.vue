@@ -1,48 +1,57 @@
 <template>
-    <div class="lg:container mx-auto px-4">
-        <div class="grid">
-            <div>
-                <!-- <a href="https://api.imgur.com/oauth2/authorize?client_id=7a3adb2577f7a4e&response_type=token" target="_blank">登入</a> -->
-                <form @submit.prevent="createAlbum">
-                    <input class="input input-bordered" type="text" v-model="albumForm.title">
-                    <button class="btn" type="submit">新增相簿</button>
-                </form>
-                <div class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-                    <div v-for="album in albums" :key="album.id" @click="currentAlbumId = album.id" class="card">
-                        <figure class="aspect-[5/3] bg-primary">
-                            <img class="w-full h-full object-scale-down" v-if="album.cover"
-                                :src="`https://i.imgur.com/${album.cover}.jpg`" alt="">
-                        </figure>
-                        <div class="card-body">
-                            <div class="card-title">
-                                <div class="text-lg">{{ album.title || '無標題' }}</div>
+    <div class="relative min-h-dvh overflow-hidden">
+        <div class="lg:container mx-auto px-4 ">
+            <div class="grid">
+                <div>
+                    <!-- <a href="https://api.imgur.com/oauth2/authorize?client_id=7a3adb2577f7a4e&response_type=token" target="_blank">登入</a> -->
+                    <form @submit.prevent="createAlbum">
+                        <input class="input input-bordered" type="text" v-model="albumForm.title">
+                        <button class="btn" type="submit">新增相簿</button>
+                    </form>
+                    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                        <Card v-for="album in albums" :key="album.id" :interactable="true"
+                            :img="album.cover && `https://i.imgur.com/${album.cover}.jpg`" :title="album.title || '無標題'"
+                            @click="currentAlbumId = album.id">
+                            <template #content>
                                 <div class="badge">{{ album.images_count }}</div>
-                            </div>
-                        </div>
+                            </template>
+                        </Card>
                     </div>
                 </div>
-            </div>
-            <!-- 當前相簿 -->
-            <div v-if="currentAlbumId !== null">
-                <button class="btn" @click="currentAlbumId = null">
-                    <LucideX />
-                </button>
-                <div class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-                    <div class="card" v-for="image in currentAlbumImages" :key="image.id">
-                        <figure class="aspect-[5/3]">
-                            <img class="w-full h-full object-scale-down" :src="image.link" alt="">
-                            <Dropdown>
-                                <DropdownItem as="a" :href="image.link" target="_blank">連結</DropdownItem>
-                                <DropdownItem @click="deleteImage(image.id)" class="hover:bg-rose-600 hover:text-white">刪除</DropdownItem>
-                            </Dropdown>
-                        </figure>
+                <!-- 當前相簿 -->
+                <Drawer :isShow="currentAlbumId !== null" @close="currentAlbumId = null">
+                    <template #title>
+                        {{ currentAlbum.title }}
+                        <button>
+                            <LucideEdit />
+                        </button>
+                    </template>
+                    <div class="py-3">
+                        <label for="file" class="btn mr-3">
+                            <LucideUpload /><span>上傳</span>
+                            <input type="file" id="file" @change="fileHandler" class="file-input file-input-bordered hidden" multiple />
+                        </label>
+                        <button v-if="filesHolder.length > 0" class="btn btn-primary" @click="uploadImages">上傳</button>
+                        <button @click="deleteAlbum" class="btn bg-rose-600 hover:bg-rose-700 text-white">
+                            <LucideTrash2 /><span>刪除相簿</span>
+                        </button>
                     </div>
-                </div>
-                <input type="file" @change="fileHandler" class="file-input file-input-bordered" multiple />
-                <button v-if="filesHolder.length > 0" class="btn btn-primary" @click="uploadImages">上傳</button>
-                <button class="btn bg-rose-600 hover:bg-rose-500 text-white" @click="deleteAlbum">
-                    <LucideTrash2 class="inline-block mr-1" />刪除相簿
-                </button>
+                    <div class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+                        <Card v-for="image in currentAlbum.images" :key="image.id" :img="image.link">
+                            <template #cover>
+                                <Dropdown class="absolute top-2 right-2">
+                                    <DropdownItem @click="copy(image.link)">
+                                        <LucideCopy />
+                                        <span>複製連結</span>
+                                    </DropdownItem>
+                                    <DropdownItem @click="deleteImage(image.id)" class="hover:bg-rose-600 hover:text-white">
+                                        <LucideTrash2 /><span>刪除</span>
+                                    </DropdownItem>
+                                </Dropdown>
+                            </template>
+                        </Card>
+                    </div>
+                </Drawer>
             </div>
         </div>
     </div>
@@ -53,15 +62,18 @@ const albumForm = reactive({
 });
 const filesHolder = ref([]);
 const storeAlbum = useImgurAlbum();
-const { albums, currentAlbumId, currentAlbumImages } = storeToRefs(storeAlbum);
+const { albums, currentAlbumId, currentAlbum } = storeToRefs(storeAlbum);
 
 if (albums.value <= 0) {
     getAlbums()
 }
 
-function bb() {
-    console.log('ccc');
-    
+async function copy(text) {
+    try {
+        await navigator.clipboard.writeText(text);
+    } catch(error) {
+        alert(error)
+    }
 }
 
 function fileHandler(e) {
@@ -90,7 +102,8 @@ async function deleteAlbum() {
 
 // 圖片
 async function getAlbumImages() {
-    currentAlbumImages.value = await $fetch(`/api/album/${currentAlbumId.value}`).then(({ data }) => data.images);
+    currentAlbum.value = [];
+    currentAlbum.value = await $fetch(`/api/album/${currentAlbumId.value}`).then(({ data }) => data);
 }
 async function uploadImages() {
     const uploadTasks = Array.from(filesHolder.value).map((file) => singleUpload(file));
