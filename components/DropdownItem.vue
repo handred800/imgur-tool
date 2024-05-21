@@ -1,6 +1,6 @@
 <template>
     <HeadlessMenuItem v-slot="{ active }">
-        <component :is="as" class="dropdown-link px-4 py-2" :class='{ "bg-slate-300": active }'>
+        <component :is="as" class="dropdown-link p-2 rounded-lg transition-colors" :class='{ "bg-slate-300": active }'>
             <slot></slot>
         </component>
     </HeadlessMenuItem>

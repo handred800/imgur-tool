@@ -8,9 +8,9 @@ input, textarea, select {
 @layer components {
     .btn {
         @apply inline-block px-3 py-2 cursor-pointer rounded bg-slate-300 hover:bg-slate-400 transition-colors;
-        &:has(svg) {
+        /* &:has(svg) {
             @apply inline-flex;
-        }
+        } */
         svg {@apply inline-block mr-2;}
         svg:only-child {@apply m-0}
     }
