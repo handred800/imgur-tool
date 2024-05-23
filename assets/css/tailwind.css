@@ -13,6 +13,10 @@ input, textarea, select {
         } */
         svg {@apply inline-block mr-2;}
         svg:only-child {@apply m-0}
+
+        &:disabled {
+            @apply opacity-75 pointer-events-none cursor-not-allowed;
+        }
     }
     .dropdown-link {
         @apply flex;

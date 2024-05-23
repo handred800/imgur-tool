@@ -17,7 +17,7 @@ const toggleToast = function(content: string, isOpen = true) {
     if (isShow.value === true) {
         setTimeout(() => {
             isShow.value = false
-        }, 50000)
+        }, 5000)
     }
 }
 
