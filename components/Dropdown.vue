@@ -11,7 +11,7 @@
                 leave-active-class="transition duration-75 ease-out" leave-from-class="transform scale-100 opacity-100"
                 leave-to-class="transform scale-95 opacity-0">
                 <HeadlessMenuItems>
-                    <div class="absolute flex flex-col p-[7px] right-0 bg-white rounded-lg shadow-lg overflow-hidden whitespace-nowrap">
+                    <div class="absolute flex flex-col p-1 right-0 bg-white rounded-lg shadow-lg overflow-hidden whitespace-nowrap">
                         <slot></slot>
                     </div>
                 </HeadlessMenuItems>

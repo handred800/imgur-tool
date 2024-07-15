@@ -1,7 +1,7 @@
 <template>
-    <div class="block shadow-lg transition rounded-lg overflow-hidden border border-slate-300"
+    <div class="block shadow-lg transition rounded-lg overflow-hidden border"
         :class="{ 'hover:shadow focus:shadow cursor-pointer': props.interactable }" :tabindex="props.interactable && 0">
-        <figure class="relative aspect-[16/10] bg-slate-500">
+        <figure class="relative aspect-[16/10] bg-slate-400">
             <img class="w-full h-full object-scale-down" v-if="props.img" :src="props.img" alt="">
             <slot name="cover"></slot>
         </figure>

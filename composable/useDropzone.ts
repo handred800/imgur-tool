@@ -2,39 +2,43 @@ export function useDropzone($el, acceptFormat:string[]) {
     const isDragOver = ref(false);
     const files = ref<File[]>([]);
 
-    function hasInvalidFormat(fileList:FileList) {
+    function hasInvalidFormat(fileList:File[]) {
         const fs = Array.from(fileList)
         return fs.some((f) => !acceptFormat.includes(f.type))
     }
-    watch($el, () => {        
-        if(!$el.value) return;
-        $el.value.addEventListener('dragenter', (e) => {
+
+    onMounted(() => {
+        $el.value.addEventListener('dragenter', (e) => {            
             e.preventDefault();
-            isDragOver.value = true;            
+            isDragOver.value = true;
         })
 
         $el.value.addEventListener('dragleave', (e) => {
             e.preventDefault();
             isDragOver.value = false;
+
         })
 
         $el.value.addEventListener('dragover', (e) => e.preventDefault())
 
-        $el.value.addEventListener('drop', (e:DragEvent) => {            
+        $el.value.addEventListener('drop', (e:DragEvent) => {
+            isDragOver.value = false;
             e.preventDefault();
+            
             if (!e.dataTransfer) return;
-            const files = Array.from(e.dataTransfer.files);
+            const res = Array.from(e.dataTransfer.files);
             if (acceptFormat) {
-                if (hasInvalidFormat(files)) {
+                if (hasInvalidFormat(res)) {
                     // 不接受格式
                     alert('不接受的格式');
                 } else {
-                    files.value = files;
+                    files.value = res;
                 }
             } else {
-                files.value = files;
+                files.value = res;
             }
         })
     })
+
     return { files, isDragOver }
 }

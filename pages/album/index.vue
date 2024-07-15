@@ -9,14 +9,22 @@
                         <button class="btn" type="submit">新增相簿</button>
                     </form>
                     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                        <NuxtLink v-for="album in albums" :key="album.id" :to="`/album/${album.id}`">
-                            <Card :interactable="true" :img="album.cover && `https://i.imgur.com/${album.cover}.jpg`"
-                                :title="album.title || '無標題'">
-                                <template #content>
-                                    <div class="badge">{{ album.images_count }}</div>
-                                </template>
-                            </Card>
-                        </NuxtLink>
+                        <div class="relative" v-for="album in albums" :key="album.id">
+                            <Dropdown class="absolute top-2 right-2 z-10">
+                                <DropdownItem @click="deleteAlbum(album.id)" class="hover:bg-rose-600 hover:text-white">
+                                    <LucideTrash2 />
+                                    <span>刪除相簿</span>
+                                </DropdownItem>
+                            </Dropdown>
+                            <NuxtLink :to="`/album/${album.id}`">
+                                <Card :interactable="true" :img="album.cover && `https://i.imgur.com/${album.cover}.jpg`"
+                                    :title="album.title || '無標題'">
+                                    <template #content>
+                                        <div class="badge">{{ album.images_count }}</div>
+                                    </template>
+                                </Card>
+                            </NuxtLink>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -40,6 +48,11 @@ async function createAlbum() {
         body: albumForm
     });
     albumForm.title = '';
+    getAlbums();
+}
+
+async function deleteAlbum(id:string) {
+	await $fetch(`/api/album/${id}`, { method: 'DELETE' });
     getAlbums();
 }
 

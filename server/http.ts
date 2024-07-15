@@ -13,6 +13,7 @@ axiosInstance.interceptors.response.use(({ data }) => data);
 // 相簿
 export const getAlbums = () => axiosInstance.get(`/account/${process.env.USER_USERNAME}/albums`);
 export const createAlbum = (body) => axiosInstance.post('/album', body);
+export const updateAlbum = (albumId, body) => axiosInstance.put(`/album/${albumId}`, body);
 export const deleteAlbum = (albumId) => axiosInstance.delete(`/album/${albumId}`);
 
 // 圖片

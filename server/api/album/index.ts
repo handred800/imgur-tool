@@ -6,12 +6,11 @@ export default defineEventHandler(async (e) => {
     case 'GET':
       return await getAlbums();
     case 'POST':
-      const body = await readBody(e);      
+      const body = await readBody(e);
       const formdata = new FormData();
       for(const keyName in body) {
           formdata.append(keyName, body[keyName]);
       }
-      
       return await createAlbum(formdata);
     default:
       return createError({
